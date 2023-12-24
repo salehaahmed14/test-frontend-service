@@ -27,6 +27,27 @@ const App = () => {
     }
   };
 
+  const deleteImage = async (imageId) => {
+    try {
+      const response = await fetch('http://localhost:5000/api/deleteImage', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: userId, imageId: imageId }),
+      });
+
+      if (response.ok) {
+        console.log('Image deleted successfully.....');
+        fetchUserImages();
+      } else {
+        console.error('Failed to delete image.');
+      }
+    } catch (error) {
+      console.error('Error deleting image:', error);
+    }
+  };
+
   const fetchUserImages = async () => {
     try {
       console.log(userId);
@@ -62,11 +83,12 @@ const App = () => {
   <div>
     <h2>User Images</h2>
     <ul>
-      {userImages.map((image) => (
-        <li key={image._id}>
-          <img src={`data:image/jpeg;base64,${image.data}`} />
-        </li>
-      ))}
+          {userImages.map((image) => (
+            <li key={image._id}>
+              <img src={`data:image/jpeg;base64,${image.data}`} alt={`User Image ${image._id}`} />
+              <button onClick={() => deleteImage(image._id)}>Delete</button>
+            </li>
+          ))}
     </ul>
   </div>
 </div>
